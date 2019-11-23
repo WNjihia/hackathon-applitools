@@ -46,3 +46,40 @@ describe('Login Page UI Elements Test', function(){
   });
 
 })
+
+describe('Data-Driven Test', function(){
+  const app = new App();
+
+  beforeEach(() => {
+    app.goTo("https://demo.applitools.com/hackathon.html");
+  });
+
+  it('successfully logs user in when both username and password are entered', function(){
+    app.sendKeys('#username', 'test');
+    app.sendKeys('#password', 'test');
+    app.clickOn('#log-in');
+    app.isUrlEquals('https://demo.applitools.com/hackathonApp.html');
+  });
+
+  it('throws error for empty username field', function(){
+    app.sendKeys('#password', 'test');
+    app.clickOn('#log-in');
+    app.isElementTextEquals('.alert-warning', 'Username must be present');
+  });
+
+  it('throws error for empty password field', function(){
+    app.sendKeys('#username', 'test');
+    app.clickOn('#log-in');
+    app.isElementTextEquals('.alert-warning', 'Password must be present');
+  });
+
+  it('throws error when both username and password are empty', function(){
+    app.clickOn('#log-in');
+    app.isElementTextEquals('.alert-warning', 'Both Username and Password must be present');
+  });
+
+})
+
+describe('Table Sort Test', function(){
+
+})

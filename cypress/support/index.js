@@ -40,6 +40,19 @@ class App{
   isPlaceholderEquals(selector, text){
     cy.get(selector).should('have.attr', 'placeholder', text);
   }
+
+  sendKeys(selector, text){
+    cy.get(selector).clear().type(text);
+  }
+
+  clickOn(selector){
+    cy.get(selector).click();
+  }
+
+  isUrlEquals(url){
+    cy.url().should('eq', url);
+  }
+
 }
 
 export default App;
