@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "cypress": "^3.6.1"
+  },
+  "dependencies": {
+    "chai-colors": "^1.0.1"
+  }
+}
