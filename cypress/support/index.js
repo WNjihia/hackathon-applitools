@@ -57,35 +57,33 @@ class App {
   getAmounts(sort) {
 
     // let sortedDescriptions = [];
-    return new Promise((reject, resolve) => {
-      let amounts = [];
+    return new Promise((resolve, reject) => {
+      const amounts = [];
       // let sortedAmounts = [];
-      let description = [];
+      const description = [];
 
       cy.get('tbody td.text-right')
         .each((line, index, $list) => {
-          const len = $list.length - 1;
-          let num = (line.text().split(' USD')[0]).replace(/[ ,]/g, "");
-          amounts.push(Number(num));
-          let desc = line.parent().find('.cell-with-media').text().replace(/[ \n]/g, "").trim();
-          description.push(desc);
-          if (sort){
-            amounts.sort(function(a, b){return a-b});
+          try {
+            const len = $list.length - 1;
+            let num = (line.text().split(' USD')[0]).replace(/[ ,]/g, "");
+            let desc = line.parent().find('.cell-with-media').text().replace(/[ \n]/g, "").trim();
+
+            amounts.push({amount: Number(num), description: desc});
+
+            if (sort){
+              amounts.sort((a, b) => a.amount - b.amount)
+            }
+            if (index === len) {
+              resolve({amounts});
+            }
+          } catch (error) {
+            reject(error)
           }
-          if (index === len) {
-            resolve({ amounts, description });
-          }
+      
         });
     });
   }
-
-  // async checkSorting() {
-  //   const initial = await getAmounts(true);
-  //   // initial.sort(function (a, b) { return a - b });
-  //   clickOn('#amount');
-  //   const current = await getAmounts();
-  //   expect(initial).to.deep.equal(current);
-  // }
 
 }
 
