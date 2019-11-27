@@ -19,39 +19,73 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+
 const TO_REPLACE = /[.,\/#!$%\^&\*;:{}\+=\-_`~()]/g;
 
-class App{
+class App {
 
-  goTo(url){
+  goTo(url) {
     cy.visit(url);
   }
 
-  isVisible(selector){
+  isVisible(selector) {
     cy.get(selector).should('be.visible');
   }
 
-  isElementTextEquals(selector, text){
+  isElementTextEquals(selector, text) {
     cy.get(selector).should((elem) => {
-      expect(elem.text().trim().replace(TO_REPLACE,"")).to.equal(text);
+      expect(elem.text().trim().replace(TO_REPLACE, "")).to.equal(text);
     });
   }
 
-  isPlaceholderEquals(selector, text){
+  isPlaceholderEquals(selector, text) {
     cy.get(selector).should('have.attr', 'placeholder', text);
   }
 
-  sendKeys(selector, text){
+  sendKeys(selector, text) {
     cy.get(selector).clear().type(text);
   }
 
-  clickOn(selector){
+  clickOn(selector) {
     cy.get(selector).click();
   }
 
-  isUrlEquals(url){
+  isUrlEquals(url) {
     cy.url().should('eq', url);
   }
+
+  getAmounts(sort) {
+
+    // let sortedDescriptions = [];
+    return new Promise((reject, resolve) => {
+      let amounts = [];
+      // let sortedAmounts = [];
+      let description = [];
+
+      cy.get('tbody td.text-right')
+        .each((line, index, $list) => {
+          const len = $list.length - 1;
+          let num = (line.text().split(' USD')[0]).replace(/[ ,]/g, "");
+          amounts.push(Number(num));
+          let desc = line.parent().find('.cell-with-media').text().replace(/[ \n]/g, "").trim();
+          description.push(desc);
+          if (sort){
+            amounts.sort(function(a, b){return a-b});
+          }
+          if (index === len) {
+            resolve({ amounts, description });
+          }
+        });
+    });
+  }
+
+  // async checkSorting() {
+  //   const initial = await getAmounts(true);
+  //   // initial.sort(function (a, b) { return a - b });
+  //   clickOn('#amount');
+  //   const current = await getAmounts();
+  //   expect(initial).to.deep.equal(current);
+  // }
 
 }
 
